@@ -190,6 +190,7 @@ export class Replayer {
       mouseTail: defaultMouseTailConfig,
       useVirtualDom: true, // Virtual-dom optimization is enabled by default.
       logger: console,
+      mutateChildNodes: false
     };
     this.config = Object.assign({}, defaultConfig, config);
 
@@ -1530,7 +1531,7 @@ export class Replayer {
       const target = buildNodeWithSN(mutation.node, {
         doc: targetDoc as Document, // can be Document or RRDocument
         mirror: mirror as Mirror, // can be this.mirror or virtualDom.mirror
-        skipChild: true,
+        skipChild: !this.config.mutateChildNodes,
         hackCss: true,
         cache: this.cache,
         /**
@@ -1742,7 +1743,7 @@ export class Replayer {
                   const newNode = buildNodeWithSN(newSn, {
                     doc: target.ownerDocument as Document, // can be Document or RRDocument
                     mirror: mirror as Mirror,
-                    skipChild: true,
+                    skipChild: !this.config.mutateChildNodes,
                     hackCss: true,
                     cache: this.cache,
                   });
