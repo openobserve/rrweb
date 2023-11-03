@@ -166,6 +166,8 @@ export class Replayer {
   // Similar to the reason for constructedStyleMutations.
   private adoptedStyleSheets: adoptedStyleSheetData[] = [];
 
+  private baseUrl = '';
+
   constructor(
     events: Array<eventWithTime | string>,
     config?: Partial<playerConfig>,
@@ -190,7 +192,7 @@ export class Replayer {
       mouseTail: defaultMouseTailConfig,
       useVirtualDom: true, // Virtual-dom optimization is enabled by default.
       logger: console,
-      mutateChildNodes: false
+      mutateChildNodes: false,
     };
     this.config = Object.assign({}, defaultConfig, config);
 
@@ -377,7 +379,10 @@ export class Replayer {
       (e) => e.type === EventType.FullSnapshot,
     );
     if (firstMeta) {
-      const { width, height } = firstMeta.data as metaEvent['data'];
+      const { width, height, href } = firstMeta.data as metaEvent['data'];
+
+      this.baseUrl = new URL(href).origin;
+
       setTimeout(() => {
         this.emitter.emit(ReplayerEvents.Resize, {
           width,
@@ -804,6 +809,7 @@ export class Replayer {
       afterAppend,
       cache: this.cache,
       mirror: this.mirror,
+      baseUrl: this.baseUrl,
     });
     afterAppend(this.iframe.contentDocument, event.data.node.id);
 
@@ -910,6 +916,7 @@ export class Replayer {
       skipChild: false,
       afterAppend,
       cache: this.cache,
+      baseUrl: this.baseUrl,
     });
     afterAppend(iframeEl.contentDocument! as Document, mutation.node.id);
 
@@ -1534,6 +1541,7 @@ export class Replayer {
         skipChild: !this.config.mutateChildNodes,
         hackCss: true,
         cache: this.cache,
+        baseUrl: this.baseUrl,
         /**
          * caveat: `afterAppend` only gets called on child nodes of target
          * we have to call it again below when this target was added to the DOM
@@ -1746,6 +1754,7 @@ export class Replayer {
                     skipChild: !this.config.mutateChildNodes,
                     hackCss: true,
                     cache: this.cache,
+                    baseUrl: this.baseUrl,
                   });
                   const siblingNode = target.nextSibling;
                   const parentNode = target.parentNode;
