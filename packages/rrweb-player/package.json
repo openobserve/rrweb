@@ -1,6 +1,6 @@
 {
-  "name": "rrweb-player",
-  "version": "2.0.0-alpha.11",
+  "name": "@openobserve/rrweb-player",
+  "version": "0.1.0",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",
