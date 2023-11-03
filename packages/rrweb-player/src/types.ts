@@ -55,6 +55,8 @@ export type RRwebPlayerOptions = {
      * @defaultValue `#D4D4D4`
      */
     inactiveColor?: string;
+
+    mutateChildNodes?: boolean;
   } & Partial<playerConfig>;
 };
 
